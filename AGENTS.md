@@ -2,7 +2,7 @@
 
 - 本目录是独立手机产品，先阅读本目录 `CONTEXT.md`、`docs/architecture.md` 和 `docs/development-plan.md`。
 - 默认仅修改本目录。跨项目接口确需修改时，说明影响并保持羽毛球兼容，不以实现手机功能为由删除原健身研究代码。
-- 当前已有 Android 实验版与 Debug APK；状态以 `docs/validation-v0.1.md` 为准，不可将模拟器测试宣称为真机性能或实时纠错精度。
+- 当前已有 Android 实验版与 Debug APK；状态以 `docs/validation-v0.2.md` 为准，不可将模拟器测试宣称为真机性能或实时纠错精度。
 - Android 首期，端侧优先。不得让手机运行依赖父目录、Python、Conda、Gradio 或桌面 CUDA。
 - 规则只使用当前及历史观测；禁止把离线回填标签当作实时能力。
 - 缺失不等于零。看不清暂停动作评价，提醒必须有证据、时间戳和过期策略。

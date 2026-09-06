@@ -9,12 +9,16 @@ import androidx.lifecycle.AndroidViewModel
 import fitness.mobile.core.Exercise
 import fitness.mobile.core.Geometry
 import fitness.mobile.core.LiveCounter
+import fitness.mobile.core.LiveCoach
+import fitness.mobile.core.CoachEvent
+import fitness.mobile.core.FeedbackGate
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
 
 class TrainingModel @JvmOverloads constructor(
-    app: Application, storageName: String = "workout-local-v1"
+    app: Application, storageName: String = "workout-local-v1",
+    private val monotonicNow: () -> Long = SystemClock::uptimeMillis
 ) : AndroidViewModel(app) {
     var consent by mutableStateOf(false)
     var placement by mutableStateOf(false)
@@ -23,6 +27,15 @@ class TrainingModel @JvmOverloads constructor(
     var side by mutableStateOf(Geometry.Side.LEFT)
     var exercise by mutableStateOf(Exercise.SQUAT)
     var voice by mutableStateOf(true)
+    var coachingEnabled by mutableStateOf(true)
+    var speakAngles by mutableStateOf(true)
+    var squatTargetEnabled by mutableStateOf(false)
+    var squatTarget by mutableStateOf(80f)
+    var coachMessage by mutableStateOf("开始后先自然伸展，记录本次准备姿势")
+    var calibrated by mutableStateOf(false)
+    var armDeviation by mutableStateOf<Double?>(null)
+    var trunkDeviation by mutableStateOf<Double?>(null)
+    var highlightedRule by mutableStateOf<String?>(null)
     var active by mutableStateOf(false)
     var hasSet by mutableStateOf(false)
     var frame by mutableStateOf<Frame?>(null)
@@ -32,18 +45,31 @@ class TrainingModel @JvmOverloads constructor(
     var history by mutableStateOf<List<String>>(emptyList())
     var speechStatus by mutableStateOf("语音初始化中")
     private var counter = LiveCounter()
+    private var coach = LiveCoach(exercise, null)
+    private var feedbackGate = FeedbackGate()
     private val prefs = app.getSharedPreferences(storageName, 0)
     private var events = JSONArray()
+    private var feedback = JSONArray()
+    private var references = JSONArray()
+    private var referenceRecordedAt: Long? = null
     private var sessionId = ""
     private var startedAt = 0L
     private var startedWall = 0L
     private var lastReceived = 0L
     private var resumedAt = 0L
-    private val speaker = Speaker(app, { pause("音频焦点丢失，训练已暂停") }, { evidenceEnd, spokenAt ->
-        if (hasSet) for (i in 0 until events.length()) {
-            val event = events.getJSONObject(i)
-            if (event.getLong("evidenceEndMs") == evidenceEnd) {
-                event.put("spokenAtUptimeMs", spokenAt); saveDraft(); break
+    private val speaker = Speaker(app, { pause("音频焦点丢失，训练已暂停") }, { id, outcome, at ->
+        if (hasSet) for (i in 0 until feedback.length()) {
+            val item = feedback.getJSONObject(i)
+            if (item.getString("id") == id) {
+                item.put("deliveryStatus", outcome).put("deliveryUpdatedAtMs", at)
+                if (outcome == "spoken") {
+                    item.put("spokenAtUptimeMs", at)
+                    if (item.getString("kind") == "COUNT") for (j in 0 until events.length()) {
+                        val rep = events.getJSONObject(j)
+                        if (rep.getLong("evidenceEndMs") == item.getLong("evidenceEndMs")) rep.put("spokenAtUptimeMs", at)
+                    }
+                }
+                saveDraft(); break
             }
         }
     })
@@ -52,19 +78,31 @@ class TrainingModel @JvmOverloads constructor(
     fun startSet() {
         if (!cameraOpen || !consent || !placement) return
         if (!hasSet) {
-            counter = LiveCounter(); count = 0; eligibleFrames = 0; events = JSONArray()
+            counter = LiveCounter(); count = 0; eligibleFrames = 0; events = JSONArray(); feedback = JSONArray()
+            references = JSONArray(); referenceRecordedAt = null
+            coach = LiveCoach(exercise, if (exercise == Exercise.SQUAT && squatTargetEnabled) squatTarget.toDouble() else null)
+            feedbackGate = FeedbackGate()
             sessionId = UUID.randomUUID().toString()
-            startedAt = SystemClock.uptimeMillis(); startedWall = System.currentTimeMillis()
+            startedAt = monotonicNow(); startedWall = System.currentTimeMillis()
             hasSet = true
         }
-        counter.pause("resume"); resumedAt = SystemClock.uptimeMillis(); active = true
+        counter.pause("resume"); coach.pause(); calibrated = false
+        resumedAt = monotonicNow(); active = true
         saveDraft()
         message = "先保持伸展姿势，再开始动作"
     }
     fun receive(value: Frame) {
-        frame = value; lastReceived = SystemClock.uptimeMillis(); speechStatus = speaker.status
-        val reason = if (SystemClock.uptimeMillis() - value.timestampMs > 350) "stale_frame"
-            else value.rejection ?: exercise.signalReason(value.metrics, placement)
+        frame = value; lastReceived = monotonicNow(); speechStatus = speaker.status
+        val now = monotonicNow()
+        val quality = when {
+            now - value.timestampMs > 350 || value.timestampMs > now -> "stale_frame"
+            !placement -> "not_eligible_front_view"
+            value.rejection != null -> value.rejection
+            value.metrics[exercise.metric]?.isFinite() != true || value.metrics["trunk_lean_deg"]?.isFinite() != true -> "missing_landmarks"
+            exercise == Exercise.BICEPS_CURL && value.metrics["upper_arm_tilt_deg"]?.isFinite() != true -> "missing_landmarks"
+            else -> value.rejection
+        }
+        val reason = quality ?: exercise.signalReason(value.metrics, placement)
         if (!active) { if (!hasSet) message = reasonText(reason) ?: "画面可用，可以开始训练"; return }
         if (value.timestampMs < resumedAt) return
         if (reason == null) eligibleFrames++
@@ -79,38 +117,91 @@ class TrainingModel @JvmOverloads constructor(
             LiveCounter.Phase.PEAK -> "已观察到屈曲，缓慢返回"
             LiveCounter.Phase.RETURNING -> "返回伸展姿势"
         }
-        if (result.reason != null) speaker.stop()
+        val available = mutableListOf<CoachEvent>()
+        if (coachingEnabled) {
+            val update = coach.accept(value.timestampMs, value.epoch, value.metrics, quality, result.phase)
+            if (update.calibrated && !calibrated) {
+                referenceRecordedAt = update.calibrationEndMs
+                references.put(JSONObject().put("evidenceStartMs", update.calibrationStartMs)
+                    .put("evidenceEndMs", update.calibrationEndMs)
+                    .put("trunkLeanDeg", update.baselineTrunk ?: JSONObject.NULL)
+                    .put("upperArmRelativeToTrunkDeg", update.baselineArm ?: JSONObject.NULL))
+            }
+            if (!update.calibrated) referenceRecordedAt = null
+            calibrated = update.calibrated; coachMessage = update.status
+            armDeviation = update.armDeviation; trunkDeviation = update.trunkDeviation
+            available.addAll(update.candidates)
+        }
+        highlightedRule = available.firstOrNull { it.kind == CoachEvent.Kind.MOVEMENT || it.kind == CoachEvent.Kind.TARGET }?.ruleId
         result.event?.let {
             events.put(JSONObject().put("count", it.count).put("evidenceStartMs", it.evidenceStartMs)
                 .put("evidenceEndMs", it.evidenceEndMs).put("expiresAtMs", it.expiresAtMs)
                 .put("ruleVersion", it.ruleVersion).put("spokenAtUptimeMs", JSONObject.NULL))
             saveDraft()
-            if (voice) speaker.say(it)
+            available.add(CoachEvent.count(it))
         }
+        speaker.retain(available, quality == null && result.reason != "invalid_timestamp")
+        deliver(available, now)
+    }
+    private fun deliver(available: List<CoachEvent>, now: Long) {
+        val event = feedbackGate.select(available, now) ?: return
+        val useSpeech = voice && speaker.isReady
+        if (useSpeech && !speaker.say(event, speakAngles)) return
+        feedbackGate.delivered(event, now)
+        if (event.kind != CoachEvent.Kind.COUNT) coachMessage = event.detailedText
+        feedback.put(JSONObject().put("id", event.id).put("sessionId", sessionId).put("kind", event.kind.name)
+            .put("ruleId", event.ruleId).put("ruleVersion", event.ruleVersion).put("priority", event.priority)
+            .put("evidenceStartMs", event.evidenceStartMs).put("evidenceEndMs", event.evidenceEndMs)
+            .put("expiresAtMs", event.expiresAtMs).put("measured", event.measured ?: JSONObject.NULL)
+            .put("reference", event.reference ?: JSONObject.NULL).put("metric", event.metric)
+            .put("referenceRecordedAtMs", referenceRecordedAt ?: JSONObject.NULL)
+            .put("text", if (speakAngles) event.detailedText else event.text)
+            .put("deliveryStatus", if (useSpeech) "submitted" else "text_only").put("spokenAtUptimeMs", JSONObject.NULL))
+        saveDraft()
     }
     fun tick() {
         speechStatus = speaker.status
-        if (cameraOpen && lastReceived > 0 && SystemClock.uptimeMillis() - lastReceived > 600) {
+        if (cameraOpen && lastReceived > 0 && monotonicNow() - lastReceived > 600) {
             counter.pause("stream_timeout"); speaker.stop(); frame = null
+            coach.pause(); calibrated = false; highlightedRule = null; armDeviation = null; trunkDeviation = null
+            coachMessage = "画面中断，动作提醒已停止"
             message = "画面中断，暂停评价；恢复后先站稳"
         }
-        if (active && SystemClock.uptimeMillis() - startedAt > 30 * 60 * 1000) finish()
+        if (active && monotonicNow() - startedAt > 30 * 60 * 1000) finish()
     }
     fun pause(reason: String = "已暂停，继续后需重新准备") {
-        active = false; counter.pause("paused"); speaker.stop(); message = reason
+        active = false; counter.pause("paused"); coach.pause(); calibrated = false; speaker.stop(); message = reason
+        highlightedRule = null; armDeviation = null; trunkDeviation = null; coachMessage = "已暂停；继续后重新记录准备姿势"
         if (hasSet) saveDraft()
     }
     fun closeCamera() { pause(); cameraOpen = false; frame = null; lastReceived = 0 }
     fun fail(reason: String) { closeCamera(); message = reason }
     fun mute() { voice = !voice; if (!voice) speaker.stop() }
+    fun toggleCoaching() {
+        coachingEnabled = !coachingEnabled; coach.pause(); calibrated = false; speaker.stop()
+        highlightedRule = null; armDeviation = null; trunkDeviation = null
+        coachMessage = if (coachingEnabled) "请保持自然伸展，重新记录准备姿势" else "动作提醒已关闭"
+    }
+    fun testAudio() {
+        if (active) return
+        val now = monotonicNow()
+        speaker.stop()
+        val text = "语音测试，请确认耳机能够听清"
+        if (!speaker.say(CoachEvent("audio:test", CoachEvent.Kind.SETUP, 100, now, now, text, text, "audio_test", null, null), false))
+            message = speaker.status
+    }
     private fun report(state: String): JSONObject = JSONObject()
-        .put("schemaVersion", 1).put("sessionId", sessionId).put("exercise", exercise.id)
+        .put("schemaVersion", 2).put("sessionId", sessionId).put("exercise", exercise.id)
         .put("label", exercise.label).put("side", side.name).put("frontCamera", front)
-        .put("startedAtUtcMs", startedWall).put("durationMs", SystemClock.uptimeMillis() - startedAt)
+        .put("startedAtUtcMs", startedWall).put("durationMs", monotonicNow() - startedAt)
         .put("candidateCount", if (eligibleFrames == 0) JSONObject.NULL else count)
         .put("eligibleFrames", eligibleFrames)
         .put("countStatus", if (eligibleFrames == 0) "not_eligible_no_observations" else "candidate_2d")
         .put("status", state).put("events", events)
+        .put("feedback", feedback).put("coachingRuleVersion", "coach-research-1")
+        .put("standingReferences", references)
+        .put("coachingEnabled", coachingEnabled).put("speakAngles", speakAngles)
+        .put("squatTargetFlexionDeg", if (squatTargetEnabled && exercise == Exercise.SQUAT) squatTarget else JSONObject.NULL)
         .put("ruleVersion", LiveCounter.RULE_VERSION).put("modelId", "pose-landmarker-lite-f16-v1")
         .put("modelSha256", "59929e1d1ee95287735ddd833b19cf4ac46d29bc7afddbbf6753c459690d574a")
     private fun saveDraft() { prefs.edit().putString("draft", report("interrupted").toString()).apply() }
@@ -138,7 +229,7 @@ class TrainingModel @JvmOverloads constructor(
         }
         history = rows
     }
-    fun export(): String = JSONObject().put("schemaVersion", 1)
+    fun export(): String = JSONObject().put("schemaVersion", 2)
         .put("history", JSONArray(prefs.getString("history", "[]")))
         .put("interrupted", prefs.getString("draft", null)?.let { JSONObject(it) }).toString(2)
     fun deleteHistory() { if (!hasSet) { prefs.edit().clear().apply(); loadHistory() } }

@@ -18,6 +18,7 @@ public final class CoreTest {
     }
     public static void main(String[] args) throws Exception {
         LiveCounterTest.run();
+        LiveCoachTest.run();
         Path fixture = Path.of(args[0]);
         int frames = 0;
         for (String line : Files.readAllLines(fixture)) {

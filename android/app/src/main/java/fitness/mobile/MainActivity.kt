@@ -106,8 +106,8 @@ private fun TrainingScreen(model: TrainingModel = viewModel()) {
     Column(Modifier.fillMaxSize().systemBarsPadding().verticalScroll(rememberScrollState())
         .padding(horizontal = 20.dp, vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text("FITNESS MOBILE", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-        Text("专注这一组", style = MaterialTheme.typography.headlineLarge)
-        Text("端侧训练实验版 · 仅记录二维动作候选", style = MaterialTheme.typography.bodyMedium)
+        Text("让每一组更专注", style = MaterialTheme.typography.headlineLarge)
+        Text("视觉陪练实验版 · 观察、提醒、复核", style = MaterialTheme.typography.bodyMedium)
         if (!model.cameraOpen && !model.hasSet) {
             Text("选择动作", style = MaterialTheme.typography.titleMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -127,6 +127,17 @@ private fun TrainingScreen(model: TrainingModel = viewModel()) {
                         label = { Text(if (side == Geometry.Side.LEFT) "观察左侧" else "观察右侧") })
                 }
             }
+            if (model.exercise == Exercise.SQUAT) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Switch(model.squatTargetEnabled, onCheckedChange = { model.squatTargetEnabled = it })
+                    Spacer(Modifier.width(8.dp)); Text("自设深蹲幅度目标")
+                }
+                if (model.squatTargetEnabled) {
+                    Text("目标屈膝 ${model.squatTarget.toInt()}°（伸直为 0°）")
+                    Slider(model.squatTarget, onValueChange = { model.squatTarget = it }, valueRange = 40f..120f, steps = 15)
+                    Text("这是你选择的训练目标，不是通用合格角度；只在舒适范围内调整。", style = MaterialTheme.typography.bodySmall)
+                }
+            }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(model.consent, onCheckedChange = { model.consent = it })
                 Text("我同意在本机处理相机画面；不保存或上传视频", modifier = Modifier.weight(1f))
@@ -137,7 +148,7 @@ private fun TrainingScreen(model: TrainingModel = viewModel()) {
             }
         }
         if (model.cameraOpen) {
-            AnalysisPreview(model.frame, model.front)
+            AnalysisPreview(model.frame, model.front, model.highlightedRule, model.side)
             Text("${model.exercise.label} · ${if (model.side == Geometry.Side.LEFT) "左侧" else "右侧"} · 姿态分析画面",
                 style = MaterialTheme.typography.labelMedium)
         } else {
@@ -146,19 +157,6 @@ private fun TrainingScreen(model: TrainingModel = viewModel()) {
                     model.cameraOpen = true else permission.launch(Manifest.permission.CAMERA)
             }, enabled = model.consent && model.placement, modifier = Modifier.fillMaxWidth()) { Text("打开相机") }
         }
-        Card(Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("本组候选次数", style = MaterialTheme.typography.labelLarge)
-                Text(if (model.eligibleFrames == 0) "—" else "${model.count}",
-                    style = MaterialTheme.typography.displayLarge, color = MaterialTheme.colorScheme.primary)
-                Text(model.message, style = MaterialTheme.typography.titleMedium)
-                model.frame?.let { f ->
-                    val angle = f.metrics[model.exercise.metric]
-                    Text("屈曲角 ${angle?.let { "%.0f°".format(it) } ?: "不可用"} · 推理 ${f.inferenceMs} ms",
-                        style = MaterialTheme.typography.labelMedium)
-                }
-            }
-        }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = { if (model.active) model.pause() else model.startSet() },
                 enabled = model.cameraOpen, modifier = Modifier.weight(1f)) {
@@ -166,9 +164,43 @@ private fun TrainingScreen(model: TrainingModel = viewModel()) {
             }
             OutlinedButton(onClick = { model.finish() }, enabled = model.hasSet) { Text("结束保存") }
         }
+        if (model.cameraOpen || model.hasSet) Card(Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("实时动作提醒 · 实验", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleMedium)
+                Text(model.coachMessage)
+                if (model.calibrated && model.coachingEnabled) {
+                    model.armDeviation?.let { Text("上臂相对准备姿势偏移约 ${it.toInt()}°", style = MaterialTheme.typography.bodySmall) }
+                    if (model.exercise == Exercise.BICEPS_CURL) model.trunkDeviation?.let {
+                        Text("躯干相对准备姿势偏移约 ${it.toInt()}°", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            }
+        }
+        Card(Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("本组候选次数", style = MaterialTheme.typography.labelLarge)
+                Text(if (model.eligibleFrames == 0) "—" else "${model.count}",
+                    style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
+                Text(model.message, style = MaterialTheme.typography.titleMedium)
+                model.frame?.let { f ->
+                    val angle = f.metrics[model.exercise.metric]
+                    Text("${if (model.exercise == Exercise.SQUAT) "膝" else "肘"}夹角 ${angle?.let { "约 %.0f°".format(180 - it) } ?: "不可用"} · 屈曲 ${angle?.let { "%.0f°".format(it) } ?: "不可用"}",
+                        style = MaterialTheme.typography.labelMedium)
+                }
+            }
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Switch(model.coachingEnabled, onCheckedChange = { model.toggleCoaching() })
+            Spacer(Modifier.width(8.dp)); Text("动作提醒（需稳定准备姿势）", modifier = Modifier.weight(1f))
+        }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(model.voice, onCheckedChange = { model.mute() })
-            Spacer(Modifier.width(8.dp)); Text("语音报数 · ${model.speechStatus}", modifier = Modifier.weight(1f))
+            Spacer(Modifier.width(8.dp)); Text("语音 · ${model.speechStatus}", modifier = Modifier.weight(1f))
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(model.speakAngles, onCheckedChange = { model.speakAngles = it })
+            Text("语音包含大约角度")
+            TextButton(onClick = { model.testAudio() }, enabled = !model.active) { Text("测试耳机") }
         }
         if (model.cameraOpen) TextButton(onClick = { model.closeCamera() }) { Text("关闭相机") }
         Text("近期训练", style = MaterialTheme.typography.titleLarge)
@@ -179,13 +211,13 @@ private fun TrainingScreen(model: TrainingModel = viewModel()) {
                 enabled = !model.active) { Text("导出记录") }
             TextButton(onClick = { model.deleteHistory() }, enabled = !model.hasSet) { Text("删除历史") }
         }
-        Text("候选次数不代表动作达标。看不清时暂停评价；本版尚未完成真人准确性与设备性能验收。",
+        Text("角度来自二维画面估计；未触发提醒不代表动作达标。本版尚未完成教练与真人校准。",
             style = MaterialTheme.typography.bodySmall)
     }
 }
 
 @Composable
-private fun AnalysisPreview(frame: Frame?, front: Boolean) {
+private fun AnalysisPreview(frame: Frame?, front: Boolean, rule: String?, side: Geometry.Side) {
     val ratio = frame?.let { it.bitmap.width.toFloat() / it.bitmap.height } ?: (3f / 4f)
     BoxWithConstraints(Modifier.fillMaxWidth().height(280.dp).background(Color.Black), contentAlignment = Alignment.Center) {
         val fitWidth = minOf(maxWidth, 280.dp * ratio)
@@ -196,9 +228,17 @@ private fun AnalysisPreview(frame: Frame?, front: Boolean) {
                 val edges = listOf(11 to 12, 11 to 13, 13 to 15, 12 to 14, 14 to 16,
                     11 to 23, 12 to 24, 23 to 24, 23 to 25, 25 to 27, 24 to 26, 26 to 28)
                 fun point(p: Pair<Float, Float>) = Offset(p.first * size.width, p.second * size.height)
+                val selected = when (rule) {
+                    "curl:arm" -> if (side == Geometry.Side.LEFT) setOf(11, 13) else setOf(12, 14)
+                    "curl:trunk" -> if (side == Geometry.Side.LEFT) setOf(11, 23) else setOf(12, 24)
+                    "squat:target", "squat:goal_reached" -> if (side == Geometry.Side.LEFT) setOf(23, 25, 27) else setOf(24, 26, 28)
+                    else -> emptySet()
+                }
                 for ((a, b) in edges) {
                     val first = frame.points[a]; val last = frame.points[b]
-                    if (first != null && last != null) drawLine(Color(0xFF8BE3C3), point(first), point(last), strokeWidth = 5f)
+                    if (first != null && last != null) drawLine(
+                        if (a in selected && b in selected) Color(0xFFFFC278) else Color(0xFF8BE3C3),
+                        point(first), point(last), strokeWidth = 5f)
                 }
                 frame.points.filterNotNull().forEach { drawCircle(Color.White, 5f, point(it)) }
             }
