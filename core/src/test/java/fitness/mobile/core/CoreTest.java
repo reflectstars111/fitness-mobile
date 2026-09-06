@@ -17,6 +17,7 @@ public final class CoreTest {
         check(expected == null ? actual == null : actual != null && Math.abs(actual - expected) < 1e-8);
     }
     public static void main(String[] args) throws Exception {
+        LiveCounterTest.run();
         Path fixture = Path.of(args[0]);
         int frames = 0;
         for (String line : Files.readAllLines(fixture)) {

@@ -1,10 +1,12 @@
 # 独立项目架构与接入边界
 
+已确定原生 Android 路线：Kotlin + Compose 界面、CameraX + MediaPipe 适配与独立 Java 动作核心。历史路线对比见 [客户端架构建议](client-architecture-proposal.md)。
+
 ## 目录与职责
 
-当前目录中的 `README.md`、`CONTEXT.md`、`docs/` 是本项目的独立文档；`android/` 是后续客户端入口，目前只含开发说明。
+当前目录中的 `README.md`、`CONTEXT.md`、`docs/` 是本项目的独立文档；`android/` 是可构建的 0.1 客户端；`core/` 是不依赖 Android 的动作核心。
 
-客户端实现时再创建可构建工程，按以下职责拆分，而不是预先堆砌空模块：
+当前用 `app` 与 `motion-core` 两个 Gradle 模块实现以下职责，后续按实际复杂度拆分：
 
 1. 相机与姿态适配：旋转、镜像、时间戳、帧背压与模型输出映射。
 2. 动作核心：不依赖 UI/相机 SDK 的状态机及质量判断。
@@ -28,7 +30,7 @@
 
 不使用 `sys.path` 指向父项目，不复制 Python 全模块为第二份维护源，不在手机项目中打包比赛素材或桌面权重。
 
-共享采用协议文件和去标识化测试夹具：明确 schema 版本、关键点名称、单位、时间戳、状态、规则版本。已导出动作目录 `protocols/exercises.v1.json` 和固定合成几何夹具，来源工作树指纹见 `provenance/source-manifest.json`。已迁移纯 Java 几何与协议核心，独立校验，不在运行时访问原项目。完整的带时间戳观测/反馈协议与实时回放状态机仍待实现。
+共享采用协议文件和去标识化测试夹具。已导出动作目录 `protocols/exercises.v1.json` 和固定合成几何夹具，来源工作树指纹见 `provenance/source-manifest.json`。已实现 `LiveCounter` 时间戳观测、因果状态机、候选证据与反馈过期契约，详见 `docs/v1-contracts.md`；完整模型观测序列的数据集回放和真人校准仍待完成。
 
 ## 上游参考（接入时重新核验）
 
@@ -41,4 +43,4 @@
 
 羽毛球继续使用原启动脚本和 Conda 环境。Android 后续独立使用 Gradle、JDK、Android SDK 和真机测试，不修改羽毛球启动命令。
 
-用户已明确授权独立建仓。本目录使用独立私有仓库 `reflectstars111/fitness-mobile`，已维护提取许可清单、纯核心独立编译测试、CI 和资源排除策略，详见 `docs/extraction.md`。此阶段仓库用于源码管理；Android 构建与真人验收仍未完成，不能据此发布客户端。
+用户已明确授权独立建仓。本目录使用独立私有仓库 `reflectstars111/fitness-mobile`，维护许可清单、Android/纯核心构建、CI 和资源校验。Debug APK 用于试用，Release 发布和真人验收尚未完成。

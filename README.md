@@ -2,7 +2,7 @@
 
 架好手机，戴上耳机，在训练中获得适时提醒，训练后查看可复核的记录。
 
-这是独立于 BBA 羽毛球网页的手机应用项目，名称暂定为 **Fitness Mobile**。已完成项目规划及可独立编译的几何/动作协议研究核心提取，**尚无 Android/iOS 客户端、可安装 APK 或实时语音产品**。
+这是独立于 BBA 羽毛球网页的手机应用项目，名称暂定为 **Fitness Mobile**。已实现 **Android 0.1 实验版与可安装 Debug APK**：端侧姿态分析画面、深蹲/站姿弯举候选计数、离线语音报数与本地记录。已通过构建和模拟器工程验证，**尚未完成真人准确性和真机性能验收**。
 
 ## 两个项目，分别开发
 
@@ -27,8 +27,10 @@
 - [Android 开发入口](android/README.md)
 - [已提取核心与测试方法](core/README.md)
 - [提取范围、来源和验证记录](docs/extraction.md)
+- [第一版验证与待验收事项](docs/validation-v0.1.md)
+- [实时计数、缺失与反馈契约](docs/v1-contracts.md)
 
-首期方向为 Android 原生应用：Kotlin、CameraX、MediaPipe Pose Landmarker 与系统语音。框架、模型版本及许可须在接入时重新核验并锁定；当前未安装移动端依赖，也未生成空壳 Gradle 工程冒充应用。
+首期采用 Kotlin、Jetpack Compose、CameraX、MediaPipe Pose Landmarker 与系统语音。已维护独立 Gradle Wrapper、Debug 依赖锁、模型指纹与构建脚本；具体命令和工具链见 [Android 说明](android/README.md)。手机运行不依赖 Python 或原项目。
 
 ## 已有成果如何使用
 

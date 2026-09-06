@@ -28,3 +28,4 @@ private-data/
 test-results/
 __pycache__/
 *.pyc
+*.download

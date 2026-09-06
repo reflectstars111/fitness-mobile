@@ -1,9 +1,10 @@
 # 可移植动作研究核心
 
-`src/main/java/fitness/mobile/core/` 是从原研究代码迁移的纯 Java 核心，供后续 Kotlin/Android 调用。无第三方运行依赖；以 Java 11 目标编译。目前不包含相机、模型、实时状态机、语音或 Android 构建工程。
+`src/main/java/fitness/mobile/core/` 包含从原研究代码迁移的纯 Java 几何/协议和新增因果计数器，已由 Kotlin/Android 调用。核心无第三方运行依赖，以 Java 11 目标编译；相机、模型和语音由独立 Android 模块管理。
 
 - `Geometry`：二维角度、屈曲角、躯干/上臂倾角、覆盖率、图像比例。
 - `Exercise`：四类动作的信号、阶段名称、机位说明和研究姿态门槛。
+- `LiveCounter`：单组因果候选计数，稳定准备、屈曲/返回门槛、缺失中断与证据事件。
 - `src/test/fixtures/geometry.tsv`：128 个原 Python 函数输出的固定合成帧，无真人数据。
 
 坐标必须是旋转处理后一致像素坐标，x 向右、y 向下；不可直接将宽高比例不同的归一化坐标用于角度计算。以关节名称传入 COCO17 对应子集，不能将 MediaPipe 33 点数组直接按索引套用。置信度由未来模型适配器定义并验证；覆盖率是该 17 点子集比例。
