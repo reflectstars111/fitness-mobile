@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "rule_version": "research-protocol-1",
+  "validation_status": "unvalidated_mobile_research_reference",
+  "phase_semantics": "offline_names_only_not_live_labels",
+  "exercises": [
+    {
+      "id": "squat",
+      "label": "深蹲",
+      "metric": "knee_flexion_deg",
+      "phases": [
+        "descent",
+        "bottom",
+        "ascent"
+      ],
+      "instructions": "固定侧面，全身入镜；从站立开始并回到站立。正面仅提供描述指标。"
+    },
+    {
+      "id": "pushup",
+      "label": "俯卧撑",
+      "metric": "elbow_flexion_deg",
+      "phases": [
+        "lowering",
+        "bottom",
+        "pressing"
+      ],
+      "instructions": "固定侧面，全身与手脚入镜；从直臂支撑开始。仅支持地面标准俯卧撑，不支持跪姿或上斜变式。"
+    },
+    {
+      "id": "biceps_curl",
+      "label": "站姿弯举",
+      "metric": "elbow_flexion_deg",
+      "phases": [
+        "curling",
+        "peak",
+        "lowering"
+      ],
+      "instructions": "固定侧面，选择清晰的一侧手臂；上臂自然下垂，从伸肘开始。仅统计所选侧，不推断重量。"
+    },
+    {
+      "id": "hip_hinge",
+      "label": "站姿髋铰链",
+      "metric": "hip_flexion_deg",
+      "phases": [
+        "hinging",
+        "bottom",
+        "extension"
+      ],
+      "instructions": "固定侧面，全身入镜；从站立开始，屈髋后回到站立。不区分硬拉负重或评价脊柱姿态。"
+    }
+  ]
+}

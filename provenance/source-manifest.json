@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/reflectstars111/BBA-Badminton-Biomechanics-Analytics",
+  "source_head": "aa3b750e81e56d8a3b459ee22567f4109a20992a",
+  "snapshot_note": "Working-tree snapshot; untracked source files are NOT present in source_head.",
+  "files": [
+    {
+      "path": "LICENSE",
+      "sha256": "51ad4cc54adba839406382d3858e13718e881c241242e85955801dabe9ed99cf",
+      "git_status": "clean"
+    },
+    {
+      "path": "badmintondataprocess/src/badminton_data_process/motion/geometry.py",
+      "sha256": "232e8c84e638b6b4bcebf3f513595b74521235de813e247e1ddb86eb2e4b929d",
+      "git_status": "?? badmintondataprocess/src/badminton_data_process/motion/geometry.py"
+    },
+    {
+      "path": "badmintondataprocess/src/badminton_data_process/motion/exercises.py",
+      "sha256": "799b7d92e731d0e14acd6f903d80d614314767d902a723e6b86983a69b5d82c7",
+      "git_status": "?? badmintondataprocess/src/badminton_data_process/motion/exercises.py"
+    }
+  ],
+  "generated_artifacts": [
+    "protocols/exercises.v1.json",
+    "core/src/test/fixtures/geometry.tsv"
+  ],
+  "fixture_seed": 20260906,
+  "fixture_source": "Synthetic random pixel coordinates; no videos or personal data",
+  "modifications": [
+    "Ported geometry and exercise definitions/gates to Java",
+    "Named joints; stricter dimension, side and confidence validation",
+    "Added main signal/view gate; retained missing values as null",
+    "Excluded offline phase backfill, pipeline, model weights and UI"
+  ]
+}

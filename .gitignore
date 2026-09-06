@@ -1,0 +1,30 @@
+# Mobile toolchains and build outputs
+.gradle/
+.kotlin/
+build/
+local.properties
+.idea/
+*.iml
+.cxx/
+.externalNativeBuild/
+
+# Signing and local secrets
+*.jks
+*.keystore
+keystore.properties
+.env
+.env.*
+!.env.example
+
+# Models, private recordings and generated evidence
+*.task
+*.tflite
+*.onnx
+*.mp4
+*.mov
+*.apk
+*.aab
+private-data/
+test-results/
+__pycache__/
+*.pyc
