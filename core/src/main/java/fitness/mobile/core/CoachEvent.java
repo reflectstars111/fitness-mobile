@@ -8,9 +8,14 @@ public final class CoachEvent {
     public final int priority;
     public final long evidenceStartMs, evidenceEndMs, expiresAtMs;
     public final Double measured, reference;
-    public final String ruleVersion = "coach-research-1";
+    public final String ruleVersion;
     public CoachEvent(String ruleId, Kind kind, int priority, long start, long end,
                       String text, String detailedText, String metric, Double measured, Double reference) {
+        this(ruleId, kind, priority, start, end, text, detailedText, metric, measured, reference, "coach-research-1");
+    }
+    public CoachEvent(String ruleId, Kind kind, int priority, long start, long end,
+                      String text, String detailedText, String metric, Double measured, Double reference, String version) {
+        ruleVersion = version;
         this.id = ruleId + ":" + start; this.ruleId = ruleId; this.kind = kind; this.priority = priority;
         evidenceStartMs = start; evidenceEndMs = end; expiresAtMs = end + 1500;
         this.text = text; this.detailedText = detailedText; this.metric = metric;

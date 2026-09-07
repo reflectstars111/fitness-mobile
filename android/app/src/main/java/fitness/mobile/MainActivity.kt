@@ -49,14 +49,18 @@ class MainActivity : ComponentActivity() {
                 background = Color(0xFF101916), surface = Color(0xFF192720),
                 secondaryContainer = Color(0xFF274538), onSecondaryContainer = Color(0xFFB8F6DB),
                 surfaceContainerHighest = Color(0xFF23392F))) {
-                Surface(Modifier.fillMaxSize()) { TrainingScreen() }
+                Surface(Modifier.fillMaxSize()) {
+                    var replay by remember { mutableStateOf(false) }
+                    if (replay) ReplayScreen { replay = false }
+                    else TrainingScreen(onReplay = { replay = true })
+                }
             }
         }
     }
 }
 
 @Composable
-private fun TrainingScreen(model: TrainingModel = viewModel()) {
+private fun TrainingScreen(model: TrainingModel = viewModel(), onReplay: () -> Unit) {
     val context = LocalContext.current
     val owner = LocalLifecycleOwner.current
     val scope = rememberCoroutineScope()
@@ -109,6 +113,7 @@ private fun TrainingScreen(model: TrainingModel = viewModel()) {
         Text("让每一组更专注", style = MaterialTheme.typography.headlineLarge)
         Text("视觉陪练实验版 · 观察、提醒、复核", style = MaterialTheme.typography.bodyMedium)
         if (!model.cameraOpen && !model.hasSet) {
+            OutlinedButton(onClick = onReplay, modifier = Modifier.fillMaxWidth()) { Text("导入视频 · 回放分析") }
             Text("选择动作", style = MaterialTheme.typography.titleMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(Exercise.SQUAT, Exercise.BICEPS_CURL).forEach { exercise ->
@@ -217,7 +222,7 @@ private fun TrainingScreen(model: TrainingModel = viewModel()) {
 }
 
 @Composable
-private fun AnalysisPreview(frame: Frame?, front: Boolean, rule: String?, side: Geometry.Side) {
+internal fun AnalysisPreview(frame: Frame?, front: Boolean, rule: String?, side: Geometry.Side) {
     val ratio = frame?.let { it.bitmap.width.toFloat() / it.bitmap.height } ?: (3f / 4f)
     BoxWithConstraints(Modifier.fillMaxWidth().height(280.dp).background(Color.Black), contentAlignment = Alignment.Center) {
         val fitWidth = minOf(maxWidth, 280.dp * ratio)

@@ -1,0 +1,97 @@
+{
+  "version": "machine-chest-press-reference-1",
+  "reviewedOn": "2026-09-07",
+  "scope": "general_seated_machine_chest_press_manual_review",
+  "assessmentScope": "local_issues_only",
+  "automaticLocalIssueRules": ["chest:trunk_change"],
+  "sources": [
+    {
+      "id": "NASM",
+      "title": "NASM · Chest Press Machine",
+      "url": "https://www.nasm.org/resource-center/exercise-library/chest-press-machine"
+    },
+    {
+      "id": "LF_OSMP",
+      "title": "Life Fitness Optima OSMP 使用手册，第 20 页",
+      "url": "https://www.lifefitness.com.au/wp-content/uploads/2015/02/Optima_user_manual_for_all_strength_2_585_1371787541.pdf#page=21"
+    }
+  ],
+  "checks": [
+    {
+      "id": "machine_setup",
+      "title": "座椅与起始把手高度",
+      "guidance": "通用平推起始时把手约对齐胸部中段；推胸、上斜推举和肩推应区分，不能混用同一角度标准。",
+      "sources": [
+        "NASM",
+        "LF_OSMP"
+      ],
+      "missingCapability": "尚无器械、把手和胸部高度标定",
+      "metric": null
+    },
+    {
+      "id": "body_support",
+      "title": "保持身体支撑",
+      "guidance": "背部由靠背支撑，双脚稳定支撑，肩部保持稳定。",
+      "sources": [
+        "NASM"
+      ],
+      "missingCapability": "人体关键点无法证明靠背接触、足底接触或肩胛位置",
+      "experimentalRule": {
+        "id": "chest:trunk_change",
+        "version": "chest-local-deviation-research-1",
+        "observable": "固定机位下，躯干投影角相对本组稳定参考的持续变化",
+        "referenceDurationMs": 1200,
+        "deviationThresholdDeg": 12,
+        "evidenceHoldMs": 700,
+        "thresholdBasis": "工程试验门槛，来源未规定这些数字，尚待独立人工标注校准",
+        "doesNotInfer": ["背部确已离开靠背", "重量过大", "整次动作正确或错误"]
+      },
+      "metric": "trunk_lean_deg"
+    },
+    {
+      "id": "elbow_path",
+      "title": "上臂位置与肘部轨迹",
+      "guidance": "NASM 建议上臂相对躯干约 45°；OSMP 要求起始肘部略低于肩。需结合握法和器械轨迹。",
+      "sources": [
+        "NASM",
+        "LF_OSMP"
+      ],
+      "missingCapability": "45° 不是肘夹角，也不是斜拍画面投影角的自动合格阈值",
+      "metric": "upper_arm_tilt_deg"
+    },
+    {
+      "id": "controlled_motion",
+      "title": "控制推出和回程",
+      "guidance": "推开和回到起点时保持控制与身体位置，避免突然甩动。",
+      "sources": [
+        "NASM",
+        "LF_OSMP"
+      ],
+      "missingCapability": "需连续轨迹与教练标注；来源未给出通用秒数或角速度阈值",
+      "metric": "elbow_flexion_deg"
+    },
+    {
+      "id": "extension",
+      "title": "受控伸展，避免强行锁肘",
+      "guidance": "推出时受控伸展双臂，避免强行锁肘；活动终点结合个人活动范围与器械轨迹。",
+      "sources": [
+        "NASM",
+        "LF_OSMP"
+      ],
+      "missingCapability": "二维肘夹角不能证明锁肘或关节过伸，不能统一强制 170° 或 180°",
+      "metric": "elbow_flexion_deg"
+    },
+    {
+      "id": "return_range",
+      "title": "回程幅度与配重控制",
+      "guidance": "在可控制的活动范围内回到起点；配重式器械避免回程失控落下。",
+      "sources": [
+        "NASM",
+        "LF_OSMP"
+      ],
+      "missingCapability": "需确认器械起点、配重轨迹及个人活动范围，现模型均未测量",
+      "metric": null
+    }
+  ],
+  "equipmentIdentityRequired": false
+}

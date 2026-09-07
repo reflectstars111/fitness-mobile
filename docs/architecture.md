@@ -4,7 +4,9 @@
 
 ## 目录与职责
 
-当前目录中的 `README.md`、`CONTEXT.md`、`docs/` 是本项目的独立文档；`android/` 是可构建的 0.2 客户端；`core/` 是不依赖 Android 的动作核心。
+当前目录中的 `README.md`、`CONTEXT.md`、`docs/` 是本项目的独立文档；`android/` 是可构建的 0.3 客户端；`core/` 是不依赖 Android 的动作核心。
+
+相机和文件回放共用 `PoseEngine`。视频由 MediaCodec 顺序解码，以原始展示时间戳输入规则；相机独立增加实时到达期限。`ChestPressCoach` 按可见部位输出躯干变化候选，不套用站姿弯举或全身合格判决。通用推胸依据以版本化 JSON 打包，无需器械品牌。细节见 [video-replay.md](video-replay.md)。
 
 当前用 `app` 与 `motion-core` 两个 Gradle 模块实现以下职责，后续按实际复杂度拆分：
 

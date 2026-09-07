@@ -2,7 +2,7 @@
 
 架好手机，戴上耳机，在训练中获得适时提醒，训练后查看可复核的记录。
 
-这是独立于 BBA 羽毛球网页的手机应用项目，名称暂定为 **Fitness Mobile**。已实现 **Android 0.2 实验版与可安装 Debug APK**：端侧姿态分析画面、深蹲/站姿弯举候选计数、弯举偏移/晃动提醒、自设深蹲幅度提示、离线语音与可追溯本地记录。已通过构建和模拟器工程验证，**尚未完成真人准确性和真机性能验收**。
+这是独立于 BBA 羽毛球网页的手机应用项目，名称暂定为 **Fitness Mobile**。已实现 **Android 0.3 实验版与可安装 Debug APK**：端侧姿态分析、深蹲/站姿弯举候选计数与语音，以及本地视频回放、通用推胸技术复核、局部躯干变化候选和证据导出。产品按部位寻找问题，不给整次动作做对错二分类。已通过构建和模拟器工程验证，**尚未完成真人准确性和真机性能验收**。
 
 ## 两个项目，分别开发
 
@@ -28,6 +28,9 @@
 - [已提取核心与测试方法](core/README.md)
 - [提取范围、来源和验证记录](docs/extraction.md)
 - [实时提醒规则与使用流程](docs/coaching-v0.2.md)
+- [视频回放与局部分析入口](docs/video-replay.md)
+- [通用器械推胸要点与局部规则](docs/machine-chest-press-guidance.md)
+- [当前验证与素材实测](docs/validation-v0.3.md)
 - [实时计数、缺失与反馈契约](docs/v1-contracts.md)
 
 首期采用 Kotlin、Jetpack Compose、CameraX、MediaPipe Pose Landmarker 与系统语音。已维护独立 Gradle Wrapper、Debug 依赖锁、模型指纹与构建脚本；具体命令和工具链见 [Android 说明](android/README.md)。手机运行不依赖 Python 或原项目。
