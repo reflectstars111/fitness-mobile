@@ -51,8 +51,13 @@ class MainActivity : ComponentActivity() {
                 surfaceContainerHighest = Color(0xFF23392F))) {
                 Surface(Modifier.fillMaxSize()) {
                     var replay by remember { mutableStateOf(false) }
-                    if (replay) ReplayScreen { replay = false }
-                    else TrainingScreen(onReplay = { replay = true })
+                    var library by remember { mutableStateOf(false) }
+                    var exerciseId by remember { mutableStateOf<String?>(null) }
+                    if (library) ExerciseLibraryScreen(onBack = { library = false }, onSelect = {
+                        exerciseId = it; library = false; replay = true
+                    })
+                    else if (replay) ReplayScreen(initialExerciseId = exerciseId, onBack = { replay = false })
+                    else TrainingScreen(onReplay = { exerciseId = null; replay = true }, onLibrary = { library = true })
                 }
             }
         }
@@ -60,7 +65,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun TrainingScreen(model: TrainingModel = viewModel(), onReplay: () -> Unit) {
+private fun TrainingScreen(model: TrainingModel = viewModel(), onReplay: () -> Unit, onLibrary: () -> Unit) {
     val context = LocalContext.current
     val owner = LocalLifecycleOwner.current
     val scope = rememberCoroutineScope()
@@ -114,6 +119,7 @@ private fun TrainingScreen(model: TrainingModel = viewModel(), onReplay: () -> U
         Text("视觉陪练实验版 · 观察、提醒、复核", style = MaterialTheme.typography.bodyMedium)
         if (!model.cameraOpen && !model.hasSet) {
             OutlinedButton(onClick = onReplay, modifier = Modifier.fillMaxWidth()) { Text("导入视频 · 回放分析") }
+            OutlinedButton(onClick = onLibrary, modifier = Modifier.fillMaxWidth()) { Text("动作知识库 · 胸背肩腿等") }
             Text("选择动作", style = MaterialTheme.typography.titleMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(Exercise.SQUAT, Exercise.BICEPS_CURL).forEach { exercise ->

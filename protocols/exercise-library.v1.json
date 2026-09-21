@@ -1,0 +1,826 @@
+{
+  "schemaVersion": 1,
+  "version": "exercise-library-1",
+  "reviewedOn": "2026-09-07",
+  "assessmentScope": "local_issues_only",
+  "contentBasis": "基于所列来源的简短中文技术摘要；复核项目、机位条件和能力限制为本项目设计，尚非教练审定或自动检测结果。",
+  "groups": [
+    "胸",
+    "背",
+    "肩",
+    "腿臀",
+    "手臂",
+    "核心"
+  ],
+  "issues": [
+    {
+      "id": "support",
+      "title": "身体支撑",
+      "phase": "准备及全程",
+      "evidence": "检查背部、臀部或脚与指定支撑面的位置是否发生持续变化。",
+      "cue": "重新稳住支撑位置，再继续这一组。",
+      "view": "能同时看见身体与支撑面的固定侧面或斜侧面",
+      "limitation": "关键点不能证明接触、压力分布或肌肉收紧。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "trunk_swing",
+      "title": "躯干稳定",
+      "phase": "发力及回程",
+      "evidence": "对照本组准备姿势，复核躯干是否随每次发力出现额外摆动。",
+      "cue": "先稳住躯干，控制这一段动作。",
+      "view": "固定侧面，肩和髋持续可见",
+      "limitation": "正常前倾、靠背倾斜与有意借力变式需区分；镜头移动不能算身体摆动。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "return_control",
+      "title": "回程控制",
+      "phase": "回程",
+      "evidence": "复核回程是否出现突然加速、弹震或失去控制的候选片段。",
+      "cue": "回程慢一点，保持控制。",
+      "view": "固定机位，关节及负重路径完整可见",
+      "limitation": "没有统一合格秒数；抽样角速度或视频播放速度不能直接证明失控。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "wrist_alignment",
+      "title": "手腕位置",
+      "phase": "全程",
+      "evidence": "复核手腕相对前臂是否出现明显折弯。",
+      "cue": "让手腕与前臂自然对齐。",
+      "view": "手与前臂清晰的近距离斜侧面",
+      "limitation": "当前骨架没有可靠手部姿态，不能精确判断腕关节角度。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "hip_sag",
+      "title": "髋部位置",
+      "phase": "保持及移动",
+      "evidence": "复核髋部是否相对肩与腿的整体位置持续下沉。",
+      "cue": "把髋部带回能稳定保持的位置。",
+      "view": "固定侧面，肩、髋、踝可见",
+      "limitation": "侧平板需侧向比较；躯干直线不能代表腰椎逐节位置。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "trunk_rotation",
+      "title": "躯干旋转",
+      "phase": "全程",
+      "evidence": "复核双肩与骨盆朝向是否出现额外旋转。",
+      "cue": "减小幅度，先保持躯干朝向稳定。",
+      "view": "固定斜后方，双肩双髋同时可见",
+      "limitation": "单侧二维骨架不能量出真实轴向旋转，镜像还会影响左右解释。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "knee_path",
+      "title": "膝部轨迹",
+      "phase": "下放及起身",
+      "evidence": "从正面复核膝盖是否相对足部方向出现突然向内偏移。",
+      "cue": "让膝盖沿脚尖方向平稳移动。",
+      "view": "固定正面或斜正面，双膝和双脚完整可见",
+      "limitation": "侧面膝夹角不能用来判断膝内扣；没有足部朝向时暂停这一项。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "heel_lift",
+      "title": "足部稳定",
+      "phase": "下放及起身",
+      "evidence": "复核原本稳定接地的脚跟是否意外抬起或脚部滑动。",
+      "cue": "先把脚踩稳，再调整下放幅度。",
+      "view": "低位斜侧面，鞋底和地面清晰可见",
+      "limitation": "举重鞋、垫高脚跟及有意变式需先确认；踝点高度不等于脚跟接触。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "load_distance",
+      "title": "负重路径",
+      "phase": "起拉及下放",
+      "evidence": "复核负重是否明显远离原本靠近身体的路径。",
+      "cue": "让负重路径靠近身体，平稳移动。",
+      "view": "固定侧面，同时看见负重与腿部",
+      "limitation": "当前未检测杠铃和哑铃，不能用腕点替代真实器械路径。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "hinge_pattern",
+      "title": "髋膝配合",
+      "phase": "下放",
+      "evidence": "复核髋部向后移动是否被明显加大的屈膝下蹲替代。",
+      "cue": "髋部向后，保持轻微屈膝，缩小到可控范围。",
+      "view": "固定侧面，肩髋膝踝可见",
+      "limitation": "需先确认罗马尼亚硬拉变式；没有通用躯干或膝角合格线。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "bridge_overextension",
+      "title": "髋与躯干",
+      "phase": "顶端",
+      "evidence": "复核抬髋后是否继续用躯干后伸追求额外高度。",
+      "cue": "到能保持躯干稳定的位置即可。",
+      "view": "固定侧面，肩髋膝可见",
+      "limitation": "人体关键点不能区分腰椎逐节伸展或判断发力肌群。",
+      "status": "manual_review_required"
+    },
+    {
+      "id": "upper_arm_drift",
+      "title": "上臂位置",
+      "phase": "屈伸肘",
+      "evidence": "对照准备姿势，复核上臂是否伴随发力大幅前移或摆动。",
+      "cue": "先稳住上臂，再完成屈伸肘。",
+      "view": "固定侧面，肩肘腕及髋可见",
+      "limitation": "不同弯举或臂屈伸变式允许的肩部运动不同，需先确认变式。",
+      "status": "manual_review_required"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "machine_chest_press",
+      "group": "胸",
+      "name": "通用器械推胸",
+      "variant": "坐姿平推；不含肩推或上斜推举",
+      "steps": [
+        "调节座椅，使起始把手约在胸部中段，背部和双脚获得稳定支撑。",
+        "控制推起与回程，允许与靠背相符的自然躯干倾斜。"
+      ],
+      "reviewTargets": [
+        "support",
+        "trunk_swing",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · chest-press-machine",
+          "url": "https://www.nasm.org/resource-center/exercise-library/chest-press-machine"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "barbell_bench_press",
+      "group": "胸",
+      "name": "杠铃平板卧推",
+      "variant": "平板双臂卧推",
+      "steps": [
+        "背部与双脚稳定支撑，握距与肘部路径相互匹配。",
+        "平稳推起，控制杠铃回到胸部附近，避免弹震借力。"
+      ],
+      "reviewTargets": [
+        "support",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · barbell-bench-press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-bench-press"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "dumbbell_bench_press",
+      "group": "胸",
+      "name": "哑铃平板卧推",
+      "variant": "平板双臂；不含单臂变式",
+      "steps": [
+        "头、肩、臀及双脚保持支撑，手腕与前臂对齐。",
+        "双侧有控制地下放和推起，维持支撑位置。"
+      ],
+      "reviewTargets": [
+        "support",
+        "wrist_alignment",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "ACE · chest-press",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/19/chest-press/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "incline_dumbbell_press",
+      "group": "胸",
+      "name": "上斜哑铃卧推",
+      "variant": "上斜双臂；凳面角度单独记录",
+      "steps": [
+        "上斜凳支撑背部，脚踩稳，从胸部附近准备推举。",
+        "控制哑铃上推及回落，避免为推起重量而明显改变躯干位置。"
+      ],
+      "reviewTargets": [
+        "support",
+        "trunk_swing",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · two-arm-incline-dumbbell-chest-press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/two-arm-incline-dumbbell-chest-press"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "push_up",
+      "group": "胸",
+      "name": "俯卧撑",
+      "variant": "地面直腿；不含跪姿或击掌",
+      "steps": [
+        "双手稳定支撑，头、躯干、髋及腿保持整体位置。",
+        "屈肘下降、伸肘推起，身体整体移动，幅度以保持控制为前提。"
+      ],
+      "reviewTargets": [
+        "hip_sag",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · push-up",
+          "url": "https://www.nasm.org/resource-center/exercise-library/push-up"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "cable_crossover",
+      "group": "胸",
+      "name": "站姿绳索夹胸",
+      "variant": "滑轮约肩高；其他高度另作变式",
+      "steps": [
+        "双脚稳定、膝微屈，允许轻微前倾并保持躯干稳定。",
+        "双臂沿弧线向前合拢，控制回程，避免被配重突然拉回。"
+      ],
+      "reviewTargets": [
+        "trunk_swing",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · cable-crossover",
+          "url": "https://www.nasm.org/resource-center/exercise-library/cable-crossover"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "pull_up",
+      "group": "背",
+      "name": "引体向上",
+      "variant": "正握严格式；不含摆荡引体",
+      "steps": [
+        "稳握横杆，躯干保持控制，向下带动肘部完成上拉。",
+        "控制下降，严格式不靠摆腿或甩动躯干完成。"
+      ],
+      "reviewTargets": [
+        "trunk_swing",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · pull-up",
+          "url": "https://www.nasm.org/resource-center/exercise-library/pull-up"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "lat_pulldown",
+      "group": "背",
+      "name": "坐姿高位下拉",
+      "variant": "颈前下拉；不含颈后",
+      "steps": [
+        "大腿由压垫固定，允许准备时轻微后倾。",
+        "肘部向下带动横杆靠近上胸，下拉中不继续大幅后仰，缓慢回程。"
+      ],
+      "reviewTargets": [
+        "trunk_swing",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "ACE · seated-lat-pulldown",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/158/seated-lat-pulldown/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "machine_row",
+      "group": "背",
+      "name": "坐姿器械划船",
+      "variant": "窄握；按实际器械选择支撑",
+      "steps": [
+        "调整座位与握把，双脚及躯干保持稳定。",
+        "肘部向后带动握把靠近躯干，再控制手臂向前回程。"
+      ],
+      "reviewTargets": [
+        "trunk_swing",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · seated-machine-row-close-grip",
+          "url": "https://www.nasm.org/resource-center/exercise-library/seated-machine-row-close-grip"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "barbell_row",
+      "group": "背",
+      "name": "杠铃俯身划船",
+      "variant": "双脚支撑、髋铰链俯身",
+      "steps": [
+        "髋部折叠俯身，膝稍屈，保持背部姿态。",
+        "将杠铃拉向腹部，再控制下放，避免每次用躯干猛抬带动。"
+      ],
+      "reviewTargets": [
+        "trunk_swing",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "ACE · bent-over-row",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/12/bent-over-row/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "single_arm_row",
+      "group": "背",
+      "name": "支撑式单臂哑铃划船",
+      "variant": "一手一膝支撑凳面；站姿俯身另作变式",
+      "steps": [
+        "支撑手和膝放稳，头与背部保持自然对齐。",
+        "肘部向后拉起哑铃，在需要扭转躯干才能继续拉高前停止，再缓慢放下。"
+      ],
+      "reviewTargets": [
+        "trunk_rotation",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "ACE · single-arm-row",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/126/single-arm-row/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "machine_shoulder_press",
+      "group": "肩",
+      "name": "坐姿器械肩推",
+      "variant": "有靠背双臂肩推",
+      "steps": [
+        "座椅调到把手约在肩部高度，背部和双脚支撑，腕与前臂对齐。",
+        "控制向上推举和下降，避免推起时明显后仰。"
+      ],
+      "reviewTargets": [
+        "support",
+        "trunk_swing",
+        "wrist_alignment"
+      ],
+      "sources": [
+        {
+          "title": "ACE · seated-shoulder-press",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/186/seated-shoulder-press/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "barbell_shoulder_press",
+      "group": "肩",
+      "name": "站姿杠铃肩推",
+      "variant": "严格推举；不含借腿推举",
+      "steps": [
+        "从肩前位置准备，站稳并保持躯干稳定。",
+        "将杠铃向头顶推起，再控制回到肩前；严格式不靠下蹲蹬腿。"
+      ],
+      "reviewTargets": [
+        "trunk_swing",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "ACE · standing-shoulder-press",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/71/standing-shoulder-press/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "lateral_raise",
+      "group": "肩",
+      "name": "哑铃侧平举",
+      "variant": "站姿双臂，舒适范围内接近肩高",
+      "steps": [
+        "站稳，肘保持微屈，手腕与前臂自然对齐。",
+        "控制向侧上方抬起及下放，避免用后仰和甩动带起哑铃。"
+      ],
+      "reviewTargets": [
+        "trunk_swing",
+        "wrist_alignment",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "ACE · lateral-raise",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/26/lateral-raise/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "front_raise",
+      "group": "肩",
+      "name": "哑铃前平举",
+      "variant": "站姿双臂，舒适范围内接近肩高",
+      "steps": [
+        "站稳并保持躯干位置，肘部可微屈。",
+        "哑铃向前上方抬起再控制下放，手腕保持自然对齐。"
+      ],
+      "reviewTargets": [
+        "trunk_swing",
+        "wrist_alignment",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "ACE · front-raise",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/54/front-raise/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "face_pull",
+      "group": "肩",
+      "name": "绳索面拉",
+      "variant": "绳索约眼高；不含高位下拉",
+      "steps": [
+        "滑轮调到眼部附近高度，站稳并保持躯干位置。",
+        "将绳索拉向面部、肘部向后，再平稳回程，避免猛拉。"
+      ],
+      "reviewTargets": [
+        "trunk_swing",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · face-pull",
+          "url": "https://www.nasm.org/resource-center/exercise-library/face-pull"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "bodyweight_squat",
+      "group": "腿臀",
+      "name": "徒手深蹲",
+      "variant": "双脚自重深蹲",
+      "steps": [
+        "站距与脚尖方向以能稳定下蹲为前提，髋膝协调弯曲。",
+        "脚底保持稳定，膝盖沿脚尖方向运动，控制下蹲及起身。"
+      ],
+      "reviewTargets": [
+        "knee_path",
+        "heel_lift",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "ACE · bodyweight-squat",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/135/bodyweight-squat/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "back_squat",
+      "group": "腿臀",
+      "name": "杠铃背蹲",
+      "variant": "自由杠铃背蹲；史密斯另作变式",
+      "steps": [
+        "杠铃由上背部稳定承托，站稳并保持躯干控制。",
+        "髋膝协调下蹲，双脚向地面发力起身；深度按可控幅度与训练目标确定。"
+      ],
+      "reviewTargets": [
+        "knee_path",
+        "heel_lift",
+        "trunk_swing"
+      ],
+      "sources": [
+        {
+          "title": "ACE · back-squat",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/11/back-squat/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "goblet_squat",
+      "group": "腿臀",
+      "name": "高脚杯深蹲",
+      "variant": "胸前持哑铃或壶铃",
+      "steps": [
+        "重量靠近胸前，站稳并保持躯干控制。",
+        "髋膝协调下蹲和起身，避免膝部突然向内偏移或重量远离身体。"
+      ],
+      "reviewTargets": [
+        "knee_path",
+        "heel_lift",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · goblet-squat",
+          "url": "https://www.nasm.org/resource-center/exercise-library/goblet-squat"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "bulgarian_split_squat",
+      "group": "腿臀",
+      "name": "保加利亚分腿蹲",
+      "variant": "后脚抬高、前脚支撑",
+      "steps": [
+        "后脚置于稳定支撑面，前脚站稳并保持平衡。",
+        "前侧髋膝协调弯曲和伸展，控制下降，按能保持平衡的幅度完成。"
+      ],
+      "reviewTargets": [
+        "knee_path",
+        "heel_lift",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · bulgarian-split-squat",
+          "url": "https://www.nasm.org/resource-center/exercise-library/bulgarian-split-squat"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "barbell_deadlift",
+      "group": "腿臀",
+      "name": "杠铃传统硬拉",
+      "variant": "地面起拉；不含相扑或罗马尼亚式",
+      "steps": [
+        "杠铃靠近身体，站稳并在起拉前稳定躯干。",
+        "髋膝协调伸展站起，再以髋部折叠及屈膝控制放回，避免猛拽。"
+      ],
+      "reviewTargets": [
+        "load_distance",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · barbell-deadlift",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-deadlift"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "dumbbell_rdl",
+      "group": "腿臀",
+      "name": "哑铃罗马尼亚硬拉",
+      "variant": "站姿开始的髋铰链",
+      "steps": [
+        "膝略屈，保持背部姿态，髋部向后移动。",
+        "下放到能维持躯干控制的范围，再伸髋站起；避免变成大幅屈膝下蹲。"
+      ],
+      "reviewTargets": [
+        "hinge_pattern",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · dumbbell-romanian-deadlift",
+          "url": "https://www.nasm.org/resource-center/exercise-library/dumbbell-romanian-deadlift"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "leg_press",
+      "group": "腿臀",
+      "name": "双腿腿举",
+      "variant": "背部支撑的双脚蹬踏；不限定品牌",
+      "steps": [
+        "背部与头部获得支撑，双脚稳定接触踏板。",
+        "控制屈膝回程与蹬出，保持骨盆支撑，避免膝部突然内偏或末端猛顶。"
+      ],
+      "reviewTargets": [
+        "support",
+        "knee_path",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · leg-press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/leg-press"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "lying_leg_curl",
+      "group": "腿臀",
+      "name": "俯卧腿弯举",
+      "variant": "俯卧双腿器械屈膝",
+      "steps": [
+        "身体由垫面稳定支撑，滚垫位于踝部上方附近。",
+        "屈膝拉起滚垫再控制伸膝，避免髋部抬起或扭动来借力。"
+      ],
+      "reviewTargets": [
+        "support",
+        "trunk_rotation",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · lying-leg-curl",
+          "url": "https://www.nasm.org/resource-center/exercise-library/lying-leg-curl"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "floor_bridge",
+      "group": "腿臀",
+      "name": "自重臀桥",
+      "variant": "仰卧双脚地面支撑",
+      "steps": [
+        "屈膝、双脚踩稳，肩背接触地面。",
+        "抬髋至肩髋膝大致连贯，再控制放下，避免用腰部继续后伸追求高度。"
+      ],
+      "reviewTargets": [
+        "bridge_overextension",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · floor-bridge",
+          "url": "https://www.nasm.org/resource-center/exercise-library/floor-bridge"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "barbell_curl",
+      "group": "手臂",
+      "name": "站姿杠铃弯举",
+      "variant": "正向握持、严格式双臂弯举",
+      "steps": [
+        "站稳，上臂位于身体两侧，保持躯干稳定。",
+        "屈肘举起、控制下降，避免向前甩肘或后仰带动重量。"
+      ],
+      "reviewTargets": [
+        "upper_arm_drift",
+        "trunk_swing",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · barbell-bicep-curl",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-bicep-curl"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "hammer_curl",
+      "group": "手臂",
+      "name": "站姿锤式弯举",
+      "variant": "中立握哑铃；可交替",
+      "steps": [
+        "手心朝身体，腕与前臂对齐，站稳。",
+        "屈肘抬起再控制下放，避免肘部前移或躯干后仰。"
+      ],
+      "reviewTargets": [
+        "upper_arm_drift",
+        "trunk_swing",
+        "wrist_alignment"
+      ],
+      "sources": [
+        {
+          "title": "ACE · hammer-curl",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/10/hammer-curl/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "lying_triceps_extension",
+      "group": "手臂",
+      "name": "仰卧杠铃臂屈伸",
+      "variant": "凳面仰卧，上臂相对稳定",
+      "steps": [
+        "背部和双脚获得支撑，手腕保持自然对齐。",
+        "保持上臂位置，屈肘控制下降再伸肘回位，避免上臂随重量大幅漂移。"
+      ],
+      "reviewTargets": [
+        "upper_arm_drift",
+        "wrist_alignment",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "ACE · lying-barbell-triceps-extensions",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/36/lying-barbell-triceps-extensions/"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "close_grip_bench_press",
+      "group": "手臂",
+      "name": "窄握杠铃卧推",
+      "variant": "相较常规卧推缩小握距",
+      "steps": [
+        "背部和双脚踩稳，使用能稳定控制的较窄握距。",
+        "保持支撑，控制杠铃向胸部附近下降并推起，避免弹震。"
+      ],
+      "reviewTargets": [
+        "support",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · close-grip-bench-press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/close-grip-bench-press"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "plank",
+      "group": "核心",
+      "name": "前臂平板支撑",
+      "variant": "双前臂、双脚支撑",
+      "steps": [
+        "肘部位于肩下附近，头、躯干与腿保持连贯。",
+        "保持呼吸与支撑，出现持续塌髋或姿态丢失时结束本次保持。"
+      ],
+      "reviewTargets": [
+        "hip_sag",
+        "support"
+      ],
+      "sources": [
+        {
+          "title": "NASM · plank",
+          "url": "https://www.nasm.org/resource-center/exercise-library/plank"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "side_plank",
+      "group": "核心",
+      "name": "侧平板支撑",
+      "variant": "单侧前臂支撑；双脚叠放或错开",
+      "steps": [
+        "肘部置于肩下附近，侧身撑起髋部。",
+        "维持身体侧面连贯，避免髋部持续下沉或躯干向前后翻转。"
+      ],
+      "reviewTargets": [
+        "hip_sag",
+        "trunk_rotation"
+      ],
+      "sources": [
+        {
+          "title": "NASM · side-plank",
+          "url": "https://www.nasm.org/resource-center/exercise-library/side-plank"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    },
+    {
+      "id": "dead_bug",
+      "group": "核心",
+      "name": "死虫式",
+      "variant": "仰卧对侧手脚交替伸展",
+      "steps": [
+        "仰卧，手臂朝上，髋膝弯曲，稳定腰背位置。",
+        "对侧手脚缓慢伸展与收回；若腰背明显离开原有支撑，缩小伸展幅度。"
+      ],
+      "reviewTargets": [
+        "support",
+        "return_control"
+      ],
+      "sources": [
+        {
+          "title": "NASM · dead-bug",
+          "url": "https://www.nasm.org/resource-center/exercise-library/dead-bug"
+        }
+      ],
+      "anglePolicy": "技术要点不提供统一角度合格线；二维投影角仅作观测，幅度需结合变式、个人活动范围与训练目标。"
+    }
+  ]
+}

@@ -85,7 +85,12 @@ internal data class ReplayResult(val folder: File, val report: JSONObject) {
 }
 
 internal suspend fun analyzeVideo(context: Context, uri: Uri, mode: ReplayMode, side: Geometry.Side,
-                                  sideView: Boolean, folder: File, onProgress: suspend (Int, Long, Long) -> Unit): ReplayResult {
+                                  sideView: Boolean, folder: File, exerciseId: String? = null,
+                                  onProgress: suspend (Int, Long, Long) -> Unit): ReplayResult {
+    val library = ExerciseLibrary.load(context)
+    val entry = library.find(exerciseId)
+    require(exerciseId == null || entry != null) { "动作知识条目不存在" }
+    require(entry == null || entry.mode == mode) { "所选动作与分析规则不匹配" }
     check(folder.isDirectory || folder.mkdirs())
     val digest = MessageDigest.getInstance("SHA-256")
     var byteCount = 0L
@@ -156,6 +161,7 @@ internal suspend fun analyzeVideo(context: Context, uri: Uri, mode: ReplayMode, 
             .put("elbowAngleAvailableFrames", elbow).put("kneeAngleAvailableFrames", knee)
             .put("ruleEligibleFrames", eligible).put("scheduledFeedbackCount", scheduled).put("qualityReasons", reasons))
         .put("technicalReference", guide ?: JSONObject.NULL)
+        .put("exerciseReference", entry?.let { library.reference(it) } ?: JSONObject.NULL)
         .put("observations", rows).put("annotations", JSONArray())
     return ReplayResult(folder, report).also { it.save() }
 }

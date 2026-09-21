@@ -78,17 +78,34 @@ class ReplayIntegrationTest {
         assumeTrue("Pass -e replayVideo <app-readable local path> to analyze a local clip", path != null)
         val source = File(path!!)
         assertTrue("Input clip not readable", source.canRead())
+        val args = InstrumentationRegistry.getArguments()
+        val mode = ReplayMode.valueOf(args.getString("replayMode") ?: "CHEST_PRESS")
+        val side = Geometry.Side.valueOf(args.getString("replaySide") ?: "LEFT")
+        val view = args.getString("replayViewConfirmed") == "true"
         val folder = File(context.filesDir, "replay-evidence-${System.currentTimeMillis()}")
-        val result = analyzeVideo(context, Uri.fromFile(source), ReplayMode.CHEST_PRESS, Geometry.Side.LEFT, false, folder) { _, _, _ -> }
+        val exerciseId = args.getString("replayExerciseId")
+        val result = analyzeVideo(context, Uri.fromFile(source), mode, side, view, folder, exerciseId) { _, _, _ -> }
+        if (exerciseId != null) {
+            val saved = org.json.JSONObject(File(folder, "report.json").readText())
+            val reference = saved.getJSONObject("exerciseReference")
+            assertEquals(exerciseId, reference.getJSONObject("exercise").getString("id"))
+            assertEquals(mode.name, reference.getString("automaticMode"))
+            assertTrue(reference.getJSONArray("checks").length() >= 2)
+        }
         assertTrue(result.rows.length() > 1)
         var last = -1L
         for (i in 0 until result.rows.length()) {
             val row = result.rows.getJSONObject(i)
             val time = row.getLong("videoTimeMs")
             assertTrue(time > last); last = time
-            assertEquals("camera_not_confirmed_fixed", row.getString("evaluationReason"))
-            assertEquals(6, row.getJSONArray("technicalChecks").length())
-            assertTrue(row.isNull("candidateCount")); assertTrue(row.isNull("scheduledFeedback"))
+            if (mode == ReplayMode.CHEST_PRESS) {
+                if (!view) assertEquals("camera_not_confirmed_fixed", row.getString("evaluationReason"))
+                assertEquals(6, row.getJSONArray("technicalChecks").length())
+            }
+            if (mode == ReplayMode.OBSERVE) {
+                assertEquals("unsupported_exercise", row.getString("evaluationReason"))
+                assertTrue(row.isNull("candidateCount")); assertTrue(row.isNull("scheduledFeedback"))
+            }
             assertTrue(File(folder, row.getString("image")).length() > 0)
         }
         println("REPLAY_REPORT=${File(folder, "report.json")}")

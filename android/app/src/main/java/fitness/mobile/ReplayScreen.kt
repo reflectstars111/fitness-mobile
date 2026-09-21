@@ -20,10 +20,14 @@ import java.io.File
 import java.util.UUID
 
 @Composable
-internal fun ReplayScreen(onBack: () -> Unit) {
+internal fun ReplayScreen(initialExerciseId: String? = null, onBack: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var mode by remember { mutableStateOf(ReplayMode.CHEST_PRESS) }
+    val library = remember { ExerciseLibrary.load(context) }
+    var exerciseId by remember { mutableStateOf<String?>(initialExerciseId ?: "machine_chest_press") }
+    val entry = library.find(exerciseId)
+    var choosing by remember { mutableStateOf(false) }
+    val mode = entry?.mode ?: ReplayMode.OBSERVE
     val uriHandler = LocalUriHandler.current
     val guide = remember { chestPressGuide(context) }
     var side by remember { mutableStateOf(Geometry.Side.LEFT) }
@@ -54,12 +58,12 @@ internal fun ReplayScreen(onBack: () -> Unit) {
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
             playing = false; result = null; preview = null; selected = 0; busy = true; progress = 0f
-            val chosenMode = mode; val chosenSide = side; val chosenView = sideView
+            val chosenMode = mode; val chosenSide = side; val chosenView = sideView; val chosenExerciseId = exerciseId
             val folder = File(context.cacheDir, "replay-${UUID.randomUUID()}").also { folders.add(it) }
             job = scope.launch {
                 try {
                     val analysis = withContext(Dispatchers.Default) {
-                        analyzeVideo(context, uri, chosenMode, chosenSide, chosenView, folder) { count, time, duration ->
+                        analyzeVideo(context, uri, chosenMode, chosenSide, chosenView, folder, chosenExerciseId) { count, time, duration ->
                             withContext(Dispatchers.Main) {
                                 progress = (time.toFloat() / duration).coerceIn(0f, 1f)
                                 status = "已分析 $count 帧 · %.1f / %.1f 秒".format(time / 1000.0, duration / 1000.0)
@@ -100,13 +104,24 @@ internal fun ReplayScreen(onBack: () -> Unit) {
         }
         playing = false
     }
+    if (choosing) {
+        ExerciseLibraryScreen(onBack = { choosing = false }, onSelect = {
+            exerciseId = it; sideView = false; reviewCheck = "general"; choosing = false
+        })
+        return
+    }
     Column(Modifier.fillMaxSize().systemBarsPadding().verticalScroll(rememberScrollState()).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)) {
         TextButton(onClick = { job?.cancel(); onBack() }) { Text("返回训练") }
         Text("视频回放分析", style = MaterialTheme.typography.headlineMedium)
         Text("查看系统看到了什么，以及哪些判断还做不到。")
         if (result == null && !busy) {
-            ReplayMode.entries.forEach { item -> FilterChip(mode == item, onClick = { mode = item }, label = { Text(item.label) }) }
+            Text(entry?.name ?: "未指定动作 · 仅观测", style = MaterialTheme.typography.titleMedium)
+            Text(entry?.capability ?: "展示观测，不启用动作规则")
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = { choosing = true }) { Text("从动作库选择") }
+                TextButton(onClick = { exerciseId = null; sideView = false; reviewCheck = "general" }) { Text("仅观测") }
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { Geometry.Side.values().forEach { item ->
                 FilterChip(side == item, onClick = { side = item }, label = { Text(if (item == Geometry.Side.LEFT) "身体左侧" else "身体右侧") })
             } }
@@ -115,7 +130,7 @@ internal fun ReplayScreen(onBack: () -> Unit) {
                     if (mode == ReplayMode.CHEST_PRESS) "机位固定，可比较本组躯干姿态变化（手持移动视频请勿勾选）"
                     else "我确认素材是所选动作的固定侧面视角", Modifier.weight(1f))
             }
-            Text("按部位查找问题：固定机位可检查推胸中的躯干姿态变化；其他要点结合画面逐项复核。角度为二维估计。")
+            Text("先确认实际动作与变式，再选择可见的一侧。镜像素材的模型左右侧需结合画面核对。角度为二维估计。")
             Text("视频仅在本机读取；分析帧临时缓存，离开此页清理。不会上传或写入训练历史。", style = MaterialTheme.typography.bodySmall)
         }
         Text(status)
@@ -188,6 +203,9 @@ internal fun ReplayScreen(onBack: () -> Unit) {
                     TextButton(onClick = { playing = false; runCatching { uriHandler.openUri(source.getString("url")) } }) { Text(source.getString("title")) }
                 }
             }
+            entry?.let {
+                ExerciseReference(library, it, reviewCheck, onCheck = { id -> playing = false; reviewCheck = id })
+            }
             val timeline = (0 until total).filter { !current.rows.getJSONObject(it).isNull("scheduledFeedback") }
             if (timeline.isNotEmpty()) {
                 Text("提醒时间点（模拟）", style = MaterialTheme.typography.titleMedium)
@@ -202,7 +220,9 @@ internal fun ReplayScreen(onBack: () -> Unit) {
             OutlinedTextField(note, onValueChange = { playing = false; note = it }, label = { Text("本帧人工复核备注") }, modifier = Modifier.fillMaxWidth())
             TextButton(onClick = {
                 current.report.getJSONArray("annotations").put(JSONObject().put("videoTimeMs", row!!.getLong("videoTimeMs"))
-                    .put("checkId", reviewCheck).put("note", note.trim()).put("source", "user_unverified"))
+                    .put("checkId", reviewCheck).put("exerciseId", exerciseId ?: JSONObject.NULL)
+                    .put("checkNamespace", if (reviewCheck == "general") "general" else if (reviewCheck in library.issues) library.version else "machine-chest-press-reference-1")
+                    .put("note", note.trim()).put("source", "user_unverified"))
                 current.save(); note = ""; status = "备注已记录；导出后可用于人工对照"
             }, enabled = note.isNotBlank() && !playing) { Text("记录备注") }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
